@@ -1,0 +1,475 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Simulador de Rosário Interativo</title>
+    <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@600;700&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary: #1e293b;
+            --primary-light: #334155;
+            --accent: #c5a059;
+            --accent-hover: #b38f45;
+            --bg: #f8fafc;
+            --card-bg: #ffffff;
+            --text: #1e293b;
+            --text-light: #64748b;
+            --border: #e2e8f0;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background: linear-gradient(135deg, #f1f5f9 0%, #e2e8f0 100%);
+            color: var(--text);
+            margin: 0;
+            padding: 20px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+        }
+
+        .container {
+            width: 100%;
+            max-width: 650px;
+            background: var(--card-bg);
+            border-radius: 16px;
+            box-shadow: 0 10px 30px rgba(15, 23, 42, 0.08);
+            padding: 35px;
+            box-sizing: border-box;
+            text-align: center;
+            border: 1px solid rgba(226, 232, 240, 0.8);
+        }
+
+        h1 {
+            font-family: 'Cinzel', serif;
+            color: var(--primary);
+            margin-bottom: 8px;
+            font-size: 2rem;
+            letter-spacing: 0.5px;
+        }
+
+        .subtitle {
+            color: var(--text-light);
+            font-size: 0.95rem;
+            margin-bottom: 25px;
+            font-weight: 300;
+        }
+
+        .selector-group {
+            margin-bottom: 20px;
+            text-align: left;
+            background: #f8fafc;
+            padding: 15px;
+            border-radius: 10px;
+            border: 1px solid var(--border);
+        }
+
+        label {
+            font-weight: 600;
+            display: block;
+            margin-bottom: 6px;
+            color: var(--primary);
+            font-size: 0.9rem;
+        }
+
+        select {
+            width: 100%;
+            padding: 12px;
+            border-radius: 8px;
+            border: 1px solid var(--border);
+            font-size: 0.95rem;
+            background: #fff;
+            color: var(--text);
+            outline: none;
+            transition: border-color 0.2s;
+        }
+
+        select:focus {
+            border-color: var(--accent);
+        }
+
+        .rosary-visual {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 6px;
+            margin: 25px 0;
+            flex-wrap: wrap;
+            min-height: 40px;
+        }
+
+        .bead {
+            width: 14px;
+            height: 14px;
+            border-radius: 50%;
+            background-color: #cbd5e1;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .bead.active {
+            background: radial-gradient(circle at 30% 30%, #fef08a, var(--accent));
+            transform: scale(1.4);
+            box-shadow: 0 0 12px rgba(197, 160, 89, 0.7);
+        }
+
+        .bead.completed {
+            background-color: var(--primary);
+        }
+
+        .prayer-card {
+            background: #fff;
+            border: 1px solid var(--border);
+            border-left: 5px solid var(--accent);
+            padding: 24px;
+            border-radius: 0 12px 12px 0;
+            text-align: left;
+            margin-bottom: 25px;
+            min-height: 160px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.02);
+        }
+
+        .prayer-title {
+            font-family: 'Cinzel', serif;
+            font-weight: 700;
+            color: var(--primary);
+            font-size: 1.15rem;
+            margin-bottom: 12px;
+        }
+
+        .prayer-text {
+            font-style: italic;
+            line-height: 1.7;
+            color: #475569;
+            white-space: pre-line;
+            font-size: 0.98rem;
+        }
+
+        .controls {
+            display: flex;
+            justify-content: space-between;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+
+        button {
+            flex: 1;
+            min-width: 110px;
+            padding: 14px;
+            border: none;
+            border-radius: 8px;
+            font-size: 0.95rem;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.2s ease;
+        }
+
+        .btn-prev {
+            background-color: #f1f5f9;
+            color: var(--text-light);
+            border: 1px solid var(--border);
+        }
+
+        .btn-prev:hover {
+            background-color: #e2e8f0;
+            color: var(--text);
+        }
+
+        .btn-play {
+            background-color: var(--accent);
+            color: white;
+        }
+
+        .btn-play:hover {
+            background-color: var(--accent-hover);
+            box-shadow: 0 4px 12px rgba(197, 160, 89, 0.3);
+        }
+
+        .btn-next {
+            background-color: var(--primary);
+            color: white;
+        }
+
+        .btn-next:hover {
+            background-color: var(--primary-light);
+            box-shadow: 0 4px 12px rgba(30, 41, 59, 0.2);
+        }
+
+        .progress-text {
+            font-size: 0.85rem;
+            color: var(--text-light);
+            margin-bottom: 15px;
+            font-weight: 500;
+            letter-spacing: 0.5px;
+            text-transform: uppercase;
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <h1>Simulador de Rosário</h1>
+    <div class="subtitle">Guia interativo para a oração do Santo Terço e Rosário</div>
+
+    <div class="selector-group">
+        <label for="mystery-select">Selecione o Mistério do Dia / Rosário:</label>
+        <select id="mystery-select" onchange="changeMysteryType()">
+            <option value="joyful">Mistérios Gozosos (Segunda e Sábado)</option>
+            <option value="sorrowful">Mistérios Dolorosos (Terça e Sexta)</option>
+            <option value="glorious" selected>Mistérios Gloriosos (Quarta e Domingo)</option>
+            <option value="luminous">Mistérios Luminosos (Quinta-feira)</option>
+            <option value="complete">Rosário Completo (Todos os 20 Mistérios)</option>
+        </select>
+    </div>
+
+    <div class="progress-text" id="progress-indicator">Passo 1 de 57</div>
+
+    <div class="rosary-visual" id="rosary-visual">
+        <!-- Gerado dinamicamente via JS -->
+    </div>
+
+    <div class="prayer-card">
+        <div class="prayer-title" id="prayer-title">Sinal da Cruz</div>
+        <div class="prayer-text" id="prayer-text">Em nome do Pai, e do Filho, e do Espírito Santo. Amém.</div>
+    </div>
+
+    <div class="controls">
+        <button class="btn-prev" onclick="prevStep()">Anterior</button>
+        <button class="btn-play" id="btn-play-pause" onclick="togglePlay()">▶ Play Áudio</button>
+        <button class="btn-next" onclick="nextStep()">Próxima</button>
+    </div>
+</div>
+
+<script>
+    const prayersData = {
+        signOfCross: { title: "Sinal da Cruz", text: "Em nome do Pai, e do Filho, e do Espírito Santo. Amém." },
+        creed: { title: "Credo (Símbolo dos Apóstolos)", text: "Creio em Deus Pai todo-poderoso, Criador do céu e da terra. E em Jesus Cristo, seu único Filho, nosso Senhor..." },
+        ourFather: { title: "Pai Nosso", text: "Pai nosso, que estais nos céus, santificado seja o vosso nome; venha a nós o vosso reino, seja feita a vossa vontade, assim na terra como no céu. O pão nosso de cada dia nos dai hoje; perdoai-nos as nossas ofensas, assim como nós perdoamos a quem nos tem ofendido; e não nos deixeis cair em tentação, mas livrai-nos do mal. Amém." },
+        hailMary: { title: "Ave Maria", text: "Ave Maria, cheia de graça, o Senhor é convosco, bendita sois vós entre as mulheres, e bendito é o fruto do vosso ventre, Jesus. Santa Maria, Mãe de Deus, rogai por nós, pecadores, agora e na hora da nossa morte. Amém." },
+        gloryBe: { title: "Glória ao Pai", text: "Glória ao Pai, e ao Filho, e ao Espírito Santo. Como era no princípio, agora e sempre, pelos séculos dos séculos. Amém." },
+        fatima: { title: "Jaculatória (Ó Meu Jesus)", text: "Ó meu Jesus, perdoai-nos, livrai-nos do fogo do inferno, levai as almas todas para o céu e socorrei principalmente aquelas que mais precisarem da vossa misericórdia." },
+        hailHolyQueen: { title: "Salve Rainha", text: "Salve, Rainha, Mãe de misericórdia, vida, doçura e esperança nossa, salve! A vós bradamos, os exilados filhos de Eva. A vós suspiramos, gemendo e chorando neste vale de lágrimas..." }
+    };
+
+    const mysteriesList = {
+        joyful: [
+            "1º Mistério: A Anunciação do Arcanjo Gabriel à Virgem Maria",
+            "2º Mistério: A Visitação de Maria à sua prima Santa Isabel",
+            "3º Mistério: O Nascimento do Menino Jesus em Belém",
+            "4º Mistério: A Apresentação do Menino Jesus no Templo",
+            "5º Mistério: O Encontro do Menino Jesus no Templo entre os doutores da Lei"
+        ],
+        sorrowful: [
+            "1º Mistério: A Agonia de Jesus no Horto das Oliveiras",
+            "2º Mistério: A Flagelação de Nosso Senhor Jesus Cristo",
+            "3º Mistério: A Coroação de espinhos",
+            "4º Mistério: Jesus carrega a Cruz rumo ao Calvário",
+            "5º Mistério: A Crucificação e morte de Jesus"
+        ],
+        glorious: [
+            "1º Mistério: A Ressurreição de Nosso Senhor Jesus Cristo",
+            "2º Mistério: A Ascensão de Jesus ao Céu",
+            "3º Mistério: A Descida do Espírito Santo sobre Nossa Senhora e os Apóstolos (Pentecostes)",
+            "4º Mistério: A Assunção de Nossa Senhora aos Céus em corpo e alma",
+            "5º Mistério: A Coroação de Nossa Senhora como Rainha do Céu e da Terra"
+        ],
+        luminous: [
+            "1º Mistério: O Batismo de Jesus no rio Jordão",
+            "2º Mistério: A auto-revelação de Jesus nas Bodas de Caná",
+            "3º Mistério: O anúncio do Reino de Deus e convite à conversão",
+            "4º Mistério: A Transfiguração de Jesus no Monte Tabor",
+            "5º Mistério: A instituição da Eucaristia"
+        ]
+    };
+
+    let currentStep = 0;
+    let isPlaying = false;
+    let synth = window.speechSynthesis || null;
+    let currentUtterance = null;
+    let speechInterval = null;
+
+    function createDecadeSequence(currentMysteries) {
+        let decSeq = [];
+        for(let d = 0; d < 5; d++) {
+            decSeq.push({ type: 'mystery', customTitle: `${d + 1}º Mistério`, customText: currentMysteries[d] + "\n\n(Reze 1 Pai Nosso)" });
+            decSeq.push({ type: 'ourFather', customTitle: `${d + 1}º Mistério - Pai Nosso`, customText: prayersData.ourFather.text });
+            for(let h = 0; h < 10; h++) {
+                decSeq.push({ type: 'hailMary', customTitle: `${d + 1}º Mistério - Ave Maria ${h + 1}/10`, customText: prayersData.hailMary.text });
+            }
+            decSeq.push({ type: 'gloryBe', customTitle: `${d + 1}º Mistério - Glória`, customText: prayersData.gloryBe.text });
+            decSeq.push({ type: 'fatima', customTitle: `${d + 1}º Mistério - Jaculatória`, customText: prayersData.fatima.text });
+        }
+        return decSeq;
+    }
+
+    function buildRosarySequence() {
+        let seq = [];
+        const selectedMysteryKey = document.getElementById('mystery-select').value;
+
+        seq.push({ type: 'signOfCross', customTitle: 'Início', customText: 'Faça o Sinal da Cruz e ofereça o terço.' });
+        seq.push({ type: 'creed', customTitle: 'Credo', customText: prayersData.creed.text });
+        seq.push({ type: 'ourFather', customTitle: 'Pai Nosso (Intenção pelo Papa)', customText: prayersData.ourFather.text });
+        for(let i = 0; i < 3; i++) {
+            seq.push({ type: 'hailMary', customTitle: `Ave Maria ${i + 1} (Virtudes Teologais)`, customText: prayersData.hailMary.text });
+        }
+        seq.push({ type: 'gloryBe', customTitle: 'Glória ao Pai', customText: prayersData.gloryBe.text });
+
+        if (selectedMysteryKey === 'complete') {
+            seq = seq.concat(createDecadeSequence(mysteriesList.joyful));
+            seq = seq.concat(createDecadeSequence(mysteriesList.luminous));
+            seq = seq.concat(createDecadeSequence(mysteriesList.sorrowful));
+            seq = seq.concat(createDecadeSequence(mysteriesList.glorious));
+        } else {
+            seq = seq.concat(createDecadeSequence(mysteriesList[selectedMysteryKey]));
+        }
+
+        seq.push({ type: 'hailHolyQueen', customTitle: 'Salve Rainha', customText: prayersData.hailHolyQueen.text });
+        seq.push({ type: 'signOfCross', customTitle: 'Fim', customText: 'Encerre com o Sinal da Cruz.' });
+
+        return seq;
+    }
+
+    let sequence = buildRosarySequence();
+
+    function renderVisualBeads() {
+        const container = document.getElementById('rosary-visual');
+        container.innerHTML = '';
+        let maxDisplay = 15;
+        let startIdx = Math.max(0, currentStep - Math.floor(maxDisplay / 2));
+        let endIdx = Math.min(sequence.length, startIdx + maxDisplay);
+
+        for(let i = startIdx; i < endIdx; i++) {
+            let bead = document.createElement('div');
+            bead.className = 'bead';
+            if (i === currentStep) bead.classList.add('active');
+            else if (i < currentStep) bead.classList.add('completed');
+            container.appendChild(bead);
+        }
+    }
+
+    function updateView() {
+        if(currentStep < 0) currentStep = 0;
+        if(currentStep >= sequence.length) {
+            currentStep = sequence.length - 1;
+            stopPlay();
+        }
+
+        const current = sequence[currentStep];
+        document.getElementById('prayer-title').innerText = current.customTitle;
+        document.getElementById('prayer-text').innerText = current.customText;
+        document.getElementById('progress-indicator').innerText = `Passo ${currentStep + 1} de ${sequence.length}`;
+        renderVisualBeads();
+    }
+
+    function nextStep() {
+        if(currentStep < sequence.length - 1) {
+            currentStep++;
+            updateView();
+        } else {
+            stopPlay();
+        }
+    }
+
+    function prevStep() {
+        if(currentStep > 0) {
+            currentStep--;
+            updateView();
+        }
+    }
+
+    function changeMysteryType() {
+        stopPlay();
+        currentStep = 0;
+        sequence = buildRosarySequence();
+        updateView();
+    }
+
+    function togglePlay() {
+        if (!synth) {
+            alert("Seu navegador não suporta a síntese de voz, mas você pode usar o simulador visualmente pelos botões Próxima e Anterior.");
+            return;
+        }
+        if (isPlaying) {
+            stopPlay();
+        } else {
+            startPlay();
+        }
+    }
+
+    function startPlay() {
+        isPlaying = true;
+        document.getElementById('btn-play-pause').innerText = '⏸ Pausar';
+        document.getElementById('btn-play-pause').style.backgroundColor = '#b91c1c';
+        playCurrentStepAudio();
+    }
+
+    function stopPlay() {
+        isPlaying = false;
+        if (synth && typeof synth.cancel === 'function') {
+            synth.cancel();
+        }
+        if (speechInterval) {
+            clearInterval(speechInterval);
+            speechInterval = null;
+        }
+        const btn = document.getElementById('btn-play-pause');
+        if(btn) {
+            btn.innerText = '▶ Play Áudio';
+            btn.style.backgroundColor = 'var(--accent)';
+        }
+    }
+
+    function playCurrentStepAudio() {
+        if (!isPlaying || !synth) return;
+
+        synth.cancel();
+        const current = sequence[currentStep];
+        const textToSpeak = `${current.customTitle}. ${current.customText}`;
+        
+        currentUtterance = new SpeechSynthesisUtterance(textToSpeak);
+        currentUtterance.lang = 'pt-BR';
+        currentUtterance.rate = 0.95;
+
+        if (speechInterval) clearInterval(speechInterval);
+        speechInterval = setInterval(() => {
+            if (synth.speaking && isPlaying) {
+                synth.resume();
+            }
+        }, 5000);
+
+        currentUtterance.onend = function() {
+            if (speechInterval) {
+                clearInterval(speechInterval);
+                speechInterval = null;
+            }
+            if (!isPlaying) return;
+            setTimeout(() => {
+                if (isPlaying) {
+                    if (currentStep < sequence.length - 1) {
+                        currentStep++;
+                        updateView();
+                        playCurrentStepAudio();
+                    } else {
+                        stopPlay();
+                    }
+                }
+            }, 1200);
+        };
+
+        currentUtterance.onerror = function() {
+            if (speechInterval) {
+                clearInterval(speechInterval);
+                speechInterval = null;
+            }
+            stopPlay();
+        };
+
+        synth.speak(currentUtterance);
+    }
+
+    updateView();
+</script>
+
+</body>
+</html>
