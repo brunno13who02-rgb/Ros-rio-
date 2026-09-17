@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Simulador de Rosário Interativo</title>
+    <title>Rosário</title>
     <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@600;700&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
     <style>
         :root {
@@ -209,7 +209,7 @@
 <body>
 
 <div class="container">
-    <h1>Simulador de Rosário</h1>
+    <h1>Rosário</h1>
     <div class="subtitle">Guia interativo para a oração do Santo Terço e Rosário</div>
 
     <div class="selector-group">
@@ -244,12 +244,14 @@
 <script>
     const prayersData = {
         signOfCross: { title: "Sinal da Cruz", text: "Em nome do Pai, e do Filho, e do Espírito Santo. Amém." },
-        creed: { title: "Credo (Símbolo dos Apóstolos)", text: "Creio em Deus Pai todo-poderoso, Criador do céu e da terra. E em Jesus Cristo, seu único Filho, nosso Senhor..." },
+        creed: { title: "Credo (Símbolo dos Apóstolos)", text: " Creio em Deus Pai Todo-Poderoso, Criador do céu e da terra; e em Jesus Cristo, seu único Filho, nosso Senhor; que foi concebido pelo poder do Espírito Santo, nasceu da Virgem Maria, padeceu sob Pôncio Pilatos, foi crucificado, morto e sepultado; desceu à mansão dos mortos; ressuscitou ao terceiro dia; subiu aos céus; está sentado à direita de Deus Pai Todo-Poderoso, de onde há de vir a julgar os vivos e os mortos. Creio no Espírito Santo, na Santa Igreja Católica, na comunhão dos santos, na remissão dos pecados, na ressurreição da carne, na vida eterna. Amém."
+},
         ourFather: { title: "Pai Nosso", text: "Pai nosso, que estais nos céus, santificado seja o vosso nome; venha a nós o vosso reino, seja feita a vossa vontade, assim na terra como no céu. O pão nosso de cada dia nos dai hoje; perdoai-nos as nossas ofensas, assim como nós perdoamos a quem nos tem ofendido; e não nos deixeis cair em tentação, mas livrai-nos do mal. Amém." },
         hailMary: { title: "Ave Maria", text: "Ave Maria, cheia de graça, o Senhor é convosco, bendita sois vós entre as mulheres, e bendito é o fruto do vosso ventre, Jesus. Santa Maria, Mãe de Deus, rogai por nós, pecadores, agora e na hora da nossa morte. Amém." },
-        gloryBe: { title: "Glória ao Pai", text: "Glória ao Pai, e ao Filho, e ao Espírito Santo. Como era no princípio, agora e sempre, pelos séculos dos séculos. Amém." },
+        gloryBe: { title: "Glória ao Pai", text: "Glória ao Pai, e ao Filho, e ao Espírito Santo. Como era no princípio, agora e sempre, Amém." },
         fatima: { title: "Jaculatória (Ó Meu Jesus)", text: "Ó meu Jesus, perdoai-nos, livrai-nos do fogo do inferno, levai as almas todas para o céu e socorrei principalmente aquelas que mais precisarem da vossa misericórdia." },
-        hailHolyQueen: { title: "Salve Rainha", text: "Salve, Rainha, Mãe de misericórdia, vida, doçura e esperança nossa, salve! A vós bradamos, os exilados filhos de Eva. A vós suspiramos, gemendo e chorando neste vale de lágrimas..." }
+        hailHolyQueen: { title: "Salve Rainha", text: "Salve, Rainha, Mãe de misericórdia, vida, doçura e esperança nossa, salve! A vós bradamos, os exilados filhos de Eva. A vós suspiramos, gemendo e chorando neste vale de lágrimas, eis pois advogada nossa, esses vossos olhos misericórdioso a nós volvei, e, depois deste desterro, nos mostrai Jesus bendido fruto do vosso ventre, ó clemente, ó piedosa, ó doce virgem Maria, rogai por nós santa mãe de Deus, para que sejamos dignos da promessa de Cristo, amém."
+}
     };
 
     const mysteriesList = {
@@ -258,7 +260,7 @@
             "2º Mistério: A Visitação de Maria à sua prima Santa Isabel",
             "3º Mistério: O Nascimento do Menino Jesus em Belém",
             "4º Mistério: A Apresentação do Menino Jesus no Templo",
-            "5º Mistério: O Encontro do Menino Jesus no Templo entre os doutores da Lei"
+            "5º Mistério: O Encontro do Menino Jesus no Templo"
         ],
         sorrowful: [
             "1º Mistério: A Agonia de Jesus no Horto das Oliveiras",
@@ -270,7 +272,7 @@
         glorious: [
             "1º Mistério: A Ressurreição de Nosso Senhor Jesus Cristo",
             "2º Mistério: A Ascensão de Jesus ao Céu",
-            "3º Mistério: A Descida do Espírito Santo sobre Nossa Senhora e os Apóstolos (Pentecostes)",
+            "3º Mistério: A Descida do Espírito Santo",
             "4º Mistério: A Assunção de Nossa Senhora aos Céus em corpo e alma",
             "5º Mistério: A Coroação de Nossa Senhora como Rainha do Céu e da Terra"
         ],
@@ -309,9 +311,9 @@
 
         seq.push({ type: 'signOfCross', customTitle: 'Início', customText: 'Faça o Sinal da Cruz e ofereça o terço.' });
         seq.push({ type: 'creed', customTitle: 'Credo', customText: prayersData.creed.text });
-        seq.push({ type: 'ourFather', customTitle: 'Pai Nosso (Intenção pelo Papa)', customText: prayersData.ourFather.text });
+        seq.push({ type: 'ourFather', customTitle: 'Pai Nosso ', customText: prayersData.ourFather.text });
         for(let i = 0; i < 3; i++) {
-            seq.push({ type: 'hailMary', customTitle: `Ave Maria ${i + 1} (Virtudes Teologais)`, customText: prayersData.hailMary.text });
+            seq.push({ type: 'hailMary', customTitle: `Ave Maria ${i + 1}`, customText: prayersData.hailMary.text });
         }
         seq.push({ type: 'gloryBe', customTitle: 'Glória ao Pai', customText: prayersData.gloryBe.text });
 
